@@ -20,7 +20,7 @@ class authJwt {
   static async specificPlayer(req: Auth, res: Response, next: NextFunction) {
     const { idPlayer } = req.params;
     
-    const result = await Player.findById(req.playerDataId);
+    const result:any = await Player.findById(req.playerDataId);
     
     try {
       if (result.id == idPlayer) {

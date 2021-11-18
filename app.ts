@@ -9,10 +9,11 @@ class App {
   constructor() {
     this.app = express();
     this.port = 8080;
+    this.router();
   }
 
   router = () => {
-    this.app.use(ConnectDb.connectDb);
+    ConnectDb.connectDb();
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json());
 

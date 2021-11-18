@@ -2,7 +2,7 @@
   "name": "assignment2",
   "version": "1.0.0",
   "description": "Clash of Village",
-  "main": "index.js",
+  "main": "app.ts",
   "scripts": {
     "start": "nodemon app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"

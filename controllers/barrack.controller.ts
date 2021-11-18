@@ -6,7 +6,7 @@ class BarrackController {
   static async showBarrack(req:Request, res:Response, next:NextFunction) {
     const { idPlayer } = req.params;
     try {
-      const dataPlayer = await Player.findOne({ _id: idPlayer }).populate(
+      const dataPlayer:any = await Player.findOne({ _id: idPlayer }).populate(
         "barrackId"
       );
       if (dataPlayer.barrackId.length === 0) {

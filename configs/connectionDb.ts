@@ -9,6 +9,7 @@ class ConnectDb{
       const dbPathUri = "mongodb://localhost:27017/";
       const dbName = "clashOfVillageDb";
       await mongoose.connect(`${dbPathUri}${dbName}`);
+      console.log("DB Connected");
       mongoose.connection.once("open", async () => {
         var CronJob = require("cron").CronJob;
         var job = new CronJob(
@@ -27,13 +28,11 @@ class ConnectDb{
         );
         job.start();
       });
-      console.log("DB Connected");
+      
     } catch (err) {
       console.log(err);
     }
   };
-  
-  
 }
 
 export default ConnectDb ;

@@ -5,10 +5,13 @@ import auth from "../middlewares/authJwt";
 class PlayerRouter {
   playerRouter: Router;
   constructor() {
-    this.playerRouter;
-    this.routes;
+    this.playerRouter = Router();
+    this.routes();
   }
   routes = () => {
+      this.playerRouter.get("/a",(req,res)=>{
+          res.send("tes")
+      })
     this.playerRouter.get("/", playerController.showPlayer);
     this.playerRouter.post("/register", playerController.registerPlayer);
     this.playerRouter.post("/login", playerController.loginPlayer);
