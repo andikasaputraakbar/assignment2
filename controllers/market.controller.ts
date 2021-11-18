@@ -1,8 +1,9 @@
-const Market = require("../models/Market");
-const Player = require("../models/Player");
+import { NextFunction, Request, Response } from "express";
+import Market from "../models/Market";
+import Player from "../models/Player";
 
-class marketController {
-  static async showMarket(req, res, next) {
+class MarketController {
+  static async showMarket(req: Request, res: Response, next: NextFunction) {
     const { idPlayer } = req.params;
     try {
       const dataPlayer = await Player.findOne({ _id: idPlayer }).populate(
@@ -20,7 +21,7 @@ class marketController {
     }
   }
 
-  static async createMarket(req, res, next) {
+  static async createMarket(req: Request, res: Response, next: NextFunction) {
     const { marketname } = req.body;
     const { idPlayer } = req.params;
 
@@ -48,7 +49,7 @@ class marketController {
     }
   }
 
-  static async findMarket(req, res, next) {
+  static async findMarket(req: Request, res: Response, next: NextFunction) {
     const { idPlayer, idMarket } = req.params;
     try {
       const dataPlayer = await Player.findOne({ _id: idPlayer }).populate(
@@ -65,21 +66,27 @@ class marketController {
     }
   }
 
-  static async updateMarket(req, res, next) {
+  static async updateMarket(req: Request, res: Response, next: NextFunction) {
     const { idPlayer, idMarket } = req.params;
     const { marketname } = req.body;
     try {
       const dataPlayer = await Player.findOne({ _id: idPlayer }).populate(
         "marketId"
       );
-      const dataMarket = await Market.findOneAndUpdate({ _id:idMarket },{marketname},{new:true});
-      res.status(202).json({ message: `Market name updated`, data: dataMarket });
+      const dataMarket = await Market.findOneAndUpdate(
+        { _id: idMarket },
+        { marketname },
+        { new: true }
+      );
+      res
+        .status(202)
+        .json({ message: `Market name updated`, data: dataMarket });
     } catch (err) {
       next(err);
     }
   }
 
-  static async deleteMarket(req, res, next) {
+  static async deleteMarket(req: Request, res: Response, next: NextFunction) {
     const { idPlayer, idMarket } = req.params;
     try {
       const dataPlayer = await Player.findOne({ _id: idPlayer }).populate(
@@ -99,7 +106,7 @@ class marketController {
       next(err);
     }
   }
-  static async collectMarket(req, res, next) {
+  static async collectMarket(req: Request, res: Response, next: NextFunction) {
     const { idPlayer, idMarket } = req.params;
     let isValid = false;
 
@@ -107,7 +114,7 @@ class marketController {
       const data = await Player.findOne({ _id: idPlayer }).populate("marketId");
       if (data) {
         let gold = 0;
-        const market_temp = data.marketId;
+        const market_temp:any = data.marketId;
         for (let i = 0; i < market_temp.length; i++) {
           if (market_temp[i]._id.toString() == idMarket) {
             gold = market_temp[i].gold;
@@ -145,4 +152,4 @@ class marketController {
   }
 }
 
-module.exports = marketController;
+export default MarketController;

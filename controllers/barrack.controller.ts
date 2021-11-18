@@ -1,8 +1,9 @@
-const Barrack = require("../models/Barrack");
-const Player = require("../models/Player");
+import { NextFunction, Request, Response } from "express";
+import Barrack from "../models/Barrack";
+import Player from "../models/Player";
 
-class barrackController {
-  static async showBarrack(req, res, next) {
+class BarrackController {
+  static async showBarrack(req:Request, res:Response, next:NextFunction) {
     const { idPlayer } = req.params;
     try {
       const dataPlayer = await Player.findOne({ _id: idPlayer }).populate(
@@ -20,7 +21,7 @@ class barrackController {
     }
   }
 
-  static async createBarrack(req, res, next) {
+  static async createBarrack(req:Request, res:Response, next:NextFunction) {
     const { barrackname } = req.body;
     const { idPlayer } = req.params;
     try {
@@ -54,7 +55,7 @@ class barrackController {
     }
   }
 
-  static async findBarrack(req, res, next) {
+  static async findBarrack(req:Request, res:Response, next:NextFunction) {
     const { idPlayer, idBarrack } = req.params;
     try {
       const dataPlayer = await Player.findOne({ _id: idPlayer }).populate(
@@ -71,7 +72,7 @@ class barrackController {
     }
   }
 
-  static async updateBarrack(req, res, next) {
+  static async updateBarrack(req:Request, res:Response, next:NextFunction) {
     const { idPlayer, idBarrack } = req.params;
     const { barrackname } = req.body;
     try {
@@ -85,7 +86,7 @@ class barrackController {
     }
   }
 
-  static async deleteBarrack(req, res, next) {
+  static async deleteBarrack(req:Request, res:Response, next:NextFunction) {
     const { idPlayer, idBarrack } = req.params;
     try {
       const dataPlayer = await Player.findOne({ _id: idPlayer }).populate(
@@ -106,7 +107,7 @@ class barrackController {
     }
   }
 
-  static async collectBarrack(req, res, next) {
+  static async collectBarrack(req:Request, res:Response, next:NextFunction) {
     const { idPlayer, idBarrack } = req.params;
     let isValid = false;
 
@@ -116,9 +117,9 @@ class barrackController {
       );
       if (data) {
         let soldier = 0;
-        const barrack_temp = data.barrackId;
+        const barrack_temp:any = data.barrackId;
         for (let i = 0; i < barrack_temp.length; i++) {
-          if (barrack_temp[i].id.toString() == idBarrack) {
+          if (barrack_temp[i]._id.toString() == idBarrack) {
             soldier = barrack_temp[i].soldier;
             isValid = true;
           }
@@ -154,4 +155,4 @@ class barrackController {
   }
 }
 
-module.exports = barrackController;
+export default BarrackController;

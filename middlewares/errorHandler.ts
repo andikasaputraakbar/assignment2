@@ -1,8 +1,11 @@
-module.exports = (err, req, res, next) => {
+import { ErrorRequestHandler, NextFunction, Response, Request } from "express";
+
+class ErrorHandler {
+  static errorHandler = (err:ErrorRequestHandler, req:Request, res:Response, next:NextFunction) => {
     let code = 0;
     let name = err.name;
     let message = "";
-  
+
     switch (name) {
       case "SOLDIER_NOT_ENOUGH":
         code = 400;
@@ -24,7 +27,7 @@ module.exports = (err, req, res, next) => {
         code = 401;
         message = "Unauthorized";
         break;
-        case "UNAUTHORIZED":
+      case "UNAUTHORIZED":
         code = 401;
         message = "Email & Password not match";
         break;
@@ -44,7 +47,9 @@ module.exports = (err, req, res, next) => {
         code = 500;
         message = "Internal Server Error";
     }
-  
+
     res.status(code).json({ success: false, message: message });
   };
-  
+}
+
+export default ErrorHandler;

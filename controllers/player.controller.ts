@@ -1,9 +1,10 @@
-const Player = require("../models/Player");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+import { NextFunction, Request, Response } from "express";
+import Player from "../models/Player";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
-class playerController {
-  static async registerPlayer(req, res, next) {
+class PlayerController {
+  static async registerPlayer(req: Request, res: Response, next: NextFunction) {
     const { username, email, password } = req.body;
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
@@ -20,7 +21,7 @@ class playerController {
     }
   }
 
-  static async showPlayer(req, res, next) {
+  static async showPlayer(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await Player.find();
       res.status(200).json({ message: "Player show", data: result });
@@ -29,7 +30,7 @@ class playerController {
     }
   }
 
-  static async loginPlayer(req, res, next) {
+  static async loginPlayer(req: Request, res: Response, next: NextFunction) {
     const { email, password } = req.body;
     try {
       const result = await Player.findOne({ email });
@@ -53,7 +54,7 @@ class playerController {
     }
   }
 
-  static async playerAttack(req, res, next) {
+  static async playerAttack(req: Request, res: Response, next: NextFunction) {
     const { idPlayer } = req.params;
     const { solPlayer, idEnemy, solEnemy } = req.body;
     try {
@@ -125,7 +126,6 @@ class playerController {
               res.status(200).json({ status: "Lose" });
             }
           }
-
         } else {
           throw { name: "ENEMY_SOLDIER_NOT_ENOUGH" };
         }
@@ -138,4 +138,4 @@ class playerController {
   }
 }
 
-module.exports = playerController;
+export default PlayerController;
