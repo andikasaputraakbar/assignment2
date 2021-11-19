@@ -6,7 +6,7 @@ class MarketController {
   static async showMarket(req: Request, res: Response, next: NextFunction) {
     const { idPlayer } = req.params;
     try {
-      const dataPlayer:any = await Player.findOne({ _id: idPlayer }).populate(
+      const dataPlayer: any = await Player.findOne({ _id: idPlayer }).populate(
         "marketId"
       );
       if (dataPlayer.marketId.length === 0) {
@@ -28,19 +28,20 @@ class MarketController {
     try {
       const player = await Player.findOne({ _id: idPlayer });
       if (player) {
-        if (player.gold <= 30 && player.food <= 10) {
+        if (player.gold <= 30 || player.food <= 10) {
           throw { name: "UNDER_LIMIT" };
+        } else {
+          const create = await Market.create({ marketname });
+          const result = await Player.findByIdAndUpdate(
+            idPlayer,
+            {
+              $push: { marketId: create._id.toString() },
+              $inc: { gold: -30, food: -10 },
+            },
+            { new: true }
+          );
+          res.status(201).json({ message: "Market created", data: result });
         }
-        const create = await Market.create({ marketname });
-        const result = await Player.findByIdAndUpdate(
-          idPlayer,
-          {
-            $push: { marketId: create._id.toString() },
-            $inc: { gold: -30, food: -10 },
-          },
-          { new: true }
-        );
-        res.status(201).json({ message: "Market created", data: result });
       } else {
         throw { name: "NOT_FOUND" };
       }
@@ -114,7 +115,7 @@ class MarketController {
       const data = await Player.findOne({ _id: idPlayer }).populate("marketId");
       if (data) {
         let gold = 0;
-        const market_temp:any = data.marketId;
+        const market_temp: any = data.marketId;
         for (let i = 0; i < market_temp.length; i++) {
           if (market_temp[i]._id.toString() == idMarket) {
             gold = market_temp[i].gold;

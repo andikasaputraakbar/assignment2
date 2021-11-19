@@ -3,10 +3,10 @@ import Barrack from "../models/Barrack";
 import Player from "../models/Player";
 
 class BarrackController {
-  static async showBarrack(req:Request, res:Response, next:NextFunction) {
+  static async showBarrack(req: Request, res: Response, next: NextFunction) {
     const { idPlayer } = req.params;
     try {
-      const dataPlayer:any = await Player.findOne({ _id: idPlayer }).populate(
+      const dataPlayer: any = await Player.findOne({ _id: idPlayer }).populate(
         "barrackId"
       );
       if (dataPlayer.barrackId.length === 0) {
@@ -21,31 +21,31 @@ class BarrackController {
     }
   }
 
-  static async createBarrack(req:Request, res:Response, next:NextFunction) {
+  static async createBarrack(req: Request, res: Response, next: NextFunction) {
     const { barrackname } = req.body;
     const { idPlayer } = req.params;
     try {
       const player = await Player.findOne({ _id: idPlayer });
 
       if (player) {
-        if (player.gold <= 30 && player.food <= 30) {
+        if (player.gold <= 30 || player.food <= 30) {
           throw { name: "UNDER_LIMIT" };
-        }
-
-        const barrack_total = player.barrackId.length;
-        if (barrack_total < 30) {
-          const create = await Barrack.create({ barrackname });
-          const result = await Player.findByIdAndUpdate(
-            idPlayer,
-            {
-              $push: { barrackId: create._id.toString() },
-              $inc: { gold: -30, food: -30 },
-            },
-            { new: true }
-          );
-          res.status(201).json({ message: "Barrack created", data: result });
         } else {
-          throw { name: "UNDER_LIMIT" };
+          const barrack_total = player.barrackId.length;
+          if (barrack_total < 30) {
+            const create = await Barrack.create({ barrackname });
+            const result = await Player.findByIdAndUpdate(
+              idPlayer,
+              {
+                $push: { barrackId: create._id.toString() },
+                $inc: { gold: -30, food: -30 },
+              },
+              { new: true }
+            );
+            res.status(201).json({ message: "Barrack created", data: result });
+          } else {
+            throw { name: "UNDER_LIMIT" };
+          }
         }
       } else {
         throw { name: "NOT_FOUND" };
@@ -55,7 +55,7 @@ class BarrackController {
     }
   }
 
-  static async findBarrack(req:Request, res:Response, next:NextFunction) {
+  static async findBarrack(req: Request, res: Response, next: NextFunction) {
     const { idPlayer, idBarrack } = req.params;
     try {
       const dataPlayer = await Player.findOne({ _id: idPlayer }).populate(
@@ -72,21 +72,27 @@ class BarrackController {
     }
   }
 
-  static async updateBarrack(req:Request, res:Response, next:NextFunction) {
+  static async updateBarrack(req: Request, res: Response, next: NextFunction) {
     const { idPlayer, idBarrack } = req.params;
     const { barrackname } = req.body;
     try {
       const dataPlayer = await Player.findOne({ _id: idPlayer }).populate(
         "barrackId"
       );
-      const dataBarrack = await Barrack.findOneAndUpdate({ _id:idBarrack },{barrackname},{new:true});
-      res.status(202).json({ message: `Barrack name updated`, data: dataBarrack });
+      const dataBarrack = await Barrack.findOneAndUpdate(
+        { _id: idBarrack },
+        { barrackname },
+        { new: true }
+      );
+      res
+        .status(202)
+        .json({ message: `Barrack name updated`, data: dataBarrack });
     } catch (err) {
       next(err);
     }
   }
 
-  static async deleteBarrack(req:Request, res:Response, next:NextFunction) {
+  static async deleteBarrack(req: Request, res: Response, next: NextFunction) {
     const { idPlayer, idBarrack } = req.params;
     try {
       const dataPlayer = await Player.findOne({ _id: idPlayer }).populate(
@@ -107,7 +113,7 @@ class BarrackController {
     }
   }
 
-  static async collectBarrack(req:Request, res:Response, next:NextFunction) {
+  static async collectBarrack(req: Request, res: Response, next: NextFunction) {
     const { idPlayer, idBarrack } = req.params;
     let isValid = false;
 
@@ -117,7 +123,7 @@ class BarrackController {
       );
       if (data) {
         let soldier = 0;
-        const barrack_temp:any = data.barrackId;
+        const barrack_temp: any = data.barrackId;
         for (let i = 0; i < barrack_temp.length; i++) {
           if (barrack_temp[i]._id.toString() == idBarrack) {
             soldier = barrack_temp[i].soldier;

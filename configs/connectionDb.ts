@@ -13,7 +13,7 @@ class ConnectDb{
       mongoose.connection.once("open", async () => {
         var CronJob = require("cron").CronJob;
         var job = new CronJob(
-          " * * * * *",
+          " * * * * * ",
           async function () {
             await Barrack.updateMany(
               { soldier: { $lt: 10 } },
@@ -27,10 +27,10 @@ class ConnectDb{
           "America/Los_Angeles"
         );
         job.start();
-      });
-      
+      });  
     } catch (err) {
       console.log(err);
+     
     }
   };
 }

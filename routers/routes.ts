@@ -12,9 +12,6 @@ class Routes {
   }
 
   routes = () => {
-    this.router.get("/",(req,res)=> {
-        res.send("ini router");
-    })
     this.router.use("/player", playerRouter);
     this.router.use("/barrack", barrackRouter);
     this.router.use("/farm", farmRouter);

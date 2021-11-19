@@ -6,7 +6,7 @@ class FarmController {
   static async showFarm(req: Request, res: Response, next: NextFunction) {
     const { idPlayer } = req.params;
     try {
-      const dataPlayer:any = await Player.findOne({ _id: idPlayer }).populate(
+      const dataPlayer: any = await Player.findOne({ _id: idPlayer }).populate(
         "farmId"
       );
       console.log(dataPlayer.farmId);
@@ -29,20 +29,20 @@ class FarmController {
     try {
       const player = await Player.findOne({ _id: idPlayer });
       if (player) {
-        if (player.gold <= 10 && player.food <= 30) {
+        if (player.gold <= 10 || player.food <= 30) {
           throw { name: "UNDER_LIMIT" };
+        } else {
+          const create = await Farm.create({ farmname });
+          const result = await Player.findByIdAndUpdate(
+            idPlayer,
+            {
+              $push: { farmId: create._id.toString() },
+              $inc: { gold: -10, food: -30 },
+            },
+            { new: true }
+          );
+          res.status(201).json({ message: "Farm created", data: result });
         }
-
-        const create = await Farm.create({ farmname });
-        const result = await Player.findByIdAndUpdate(
-          idPlayer,
-          {
-            $push: { farmId: create._id.toString() },
-            $inc: { gold: -10, food: -30 },
-          },
-          { new: true }
-        );
-        res.status(201).json({ message: "Farm created", data: result });
       } else {
         throw { name: "NOT_FOUND" };
       }
@@ -117,7 +117,7 @@ class FarmController {
       const data = await Player.findOne({ _id: idPlayer }).populate("farmId");
       if (data) {
         let food = 0;
-        const farm_temp:any = data.farmId;
+        const farm_temp: any = data.farmId;
         for (let i = 0; i < farm_temp.length; i++) {
           if (farm_temp[i]._id.toString() == idFarm) {
             food = farm_temp[i].food;
