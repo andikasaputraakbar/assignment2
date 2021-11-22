@@ -1,7 +1,7 @@
 import express, { Application } from "express";
-import router from "./routers/routes";
-import errorHandler from "./middlewares/errorHandler";
-import ConnectDb from "./configs/connectionDb";
+import router from "./src/routers/routes";
+import errorHandler from "./src/middlewares/errorHandler";
+import ConnectDb from "./src/database/connectionDb";
 
 class App {
   public app: Application;
@@ -14,6 +14,7 @@ class App {
 
   router = () => {
     ConnectDb.connectDb();
+    ConnectDb.CronJobDb();
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json());
 
@@ -31,4 +32,4 @@ class App {
   };
 }
 
-new App().app;
+export default new App().app;
